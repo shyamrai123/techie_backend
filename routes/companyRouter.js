@@ -1,5 +1,5 @@
 const {Router} = require("express");
-const { addCompany, getAllCompany, getCompanyJobs, deleteCompany, getOneCompany,  } = require("../controller/companyController");
+const { addCompany, getAllCompany, getCompanyJobs, deleteCompany, getOneCompany, followcompany } = require("../controller/companyController");
 const companyRouter = Router();
 
 
@@ -49,6 +49,17 @@ companyRouter.get("/getCompany/:cid", async(req,res) => {
         res.send({Error : error.message})
     }
 })
+
+companyRouter.post("/followcompany/:companyId",async(req,res) => {
+  
+    try {
+         if((!req.isAuth && req.access !== "admin") && req.access !== "recruitor") throw new Error("Unauthenticated");
+        const data = await followcompany(req);
+        res.send(data);
+    } catch (error) {
+        res.send({Err : error.message})
+    }
+});
 
 
 module.exports = companyRouter;

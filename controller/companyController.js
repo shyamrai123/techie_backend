@@ -1,5 +1,5 @@
 
-const {company,jobs} = require("../mongoConfig");
+const {company,jobs, users} = require("../mongoConfig");
 const mongodb = require("mongodb")
 
 const addCompany = async(req) => {
@@ -29,10 +29,33 @@ const deleteCompany = async(req) => {
 }
 
 
+const followcompany = async (req) => {
+    const companyId =(req.params.companyId);
+    const userId = new mongodb.ObjectId(req.userId);
+    const userData = await users.findOne({_id:userId})
+    const companyIdArr = userData.followCompany;
+    const companyIds = companyIdArr.filter((e)=>e == (companyId));
+    if(companyIds.length) throw new Error("company already following")
+    return users.updateOne(
+      { _id: userId },
+      {
+        $push: {
+          followCompany: companyId,
+        },
+      },
+      {
+        new: true,
+      }
+    );
+  };
+
+
 module.exports = {
     addCompany,
     getAllCompany,
     getCompanyJobs,
     deleteCompany,
-    getOneCompany
+    getOneCompany,
+    followcompany
+
 }

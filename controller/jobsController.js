@@ -7,7 +7,7 @@ const addJob = async (req) => {
   const cid = new mongoDb.ObjectId(req.body.cid);
 
   const d = await company.updateOne(
-    { _id: cid },
+    { _id:cid },
     {
       $push: {
         jobs: jobId,
@@ -24,7 +24,10 @@ const addJob = async (req) => {
 const saveJob = async (req) => {
   const jobId = (req.params.jobId);
   const userId = new mongoDb.ObjectId(req.userId);
-
+  const userData = await users.findone({_id:userId});
+  const jobsIdArr = userData.saveJob;
+  const jobIds = jobsIdArr.filter((e)=>e==jobId);
+  if(jobIds.length) throw new Error("jobalready saved") 
   return users.findOneAndUpdate(
     { _id: userId },
     {
@@ -41,11 +44,8 @@ const saveJob = async (req) => {
 const getsaveJob = async(req)=>{
     const userId = new mongoDb.ObjectId(req.params.userId);
     const userData = await users.findOne({_id:userId});
-    
     const jobIds = userData.savedjobs;
-    
     const jobsPromise = jobIds.map((e) => jobs.findOne({_id : new mongoDb.ObjectId(e)}));
-    
     const jobsResolve = await Promise.allSettled(jobsPromise);
     return jobsResolve;
 
