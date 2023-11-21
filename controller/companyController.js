@@ -49,6 +49,16 @@ const followcompany = async (req) => {
     );
   };
 
+  const getfollowcompany = async(req,res)=>{
+    const userId = new mongodb.ObjectId(req.params.userId);
+    const userData = await users.findOne({_id:userId});
+    const companyIds = userData.followCompany;
+    const compsPromise = companyIds.map((e) => company.findOne({_id:new mongodb.ObjectId(e)}));
+    const compsResolve = await Promise.allSettled(compsPromise);
+    return compsResolve;
+   
+  }
+
 
 module.exports = {
     addCompany,
@@ -56,6 +66,6 @@ module.exports = {
     getCompanyJobs,
     deleteCompany,
     getOneCompany,
-    followcompany
-
+    followcompany,
+   getfollowcompany
 }

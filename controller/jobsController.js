@@ -41,11 +41,15 @@ const saveJob = async (req) => {
   );
 };
 
+
+
+
+
 const getsaveJob = async(req)=>{
     const userId = new mongoDb.ObjectId(req.params.userId);
     const userData = await users.findOne({_id:userId});
     const jobIds = userData.savedjobs;
-    const jobsPromise = jobIds.map((e) => jobs.findOne({_id : new mongoDb.ObjectId(e)}));
+    const jobsPromise = jobIds.map((e) => jobs.findOne({_id:new mongoDb.ObjectId(e)}))
     const jobsResolve = await Promise.allSettled(jobsPromise);
     return jobsResolve;
 
