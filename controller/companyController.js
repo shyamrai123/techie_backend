@@ -25,7 +25,7 @@ const getCompanyJobs = async(req) => {
 
 const deleteCompany = async(req) => {
    const cid = new mongodb.ObjectId(req.params.cid);
-   return company.findOneAndDelete({_id : cid})
+   return company.findOneAndDelete({_id : cid}) 
 }
 
 
